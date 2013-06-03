@@ -4,6 +4,17 @@ struct
 open Interp
 
 val tests =
+    Test.concat [
+       Test.group
+          ("subst", Test.polyAssertEq {show = unparse},
+           [{actual = subst (AST_APP (AST_SUCC,AST_ID "x"), "x", AST_NUM 1),
+             expected = AST_APP (AST_SUCC,AST_NUM 1)},
+            {actual = subst (AST_APP (AST_FUN ("x", AST_APP (AST_SUCC, AST_ID "x")),
+                                      (AST_APP (AST_PRED, AST_ID "x"))),
+                             "x", AST_NUM 3),
+             expected = AST_APP (AST_FUN ("x", AST_APP (AST_SUCC, AST_ID "x")),
+                                 (AST_APP (AST_PRED, AST_NUM 3)))}
+          ]),
     Test.group
        ("interp", Test.polyAssertEq {show = unparse},
         [
@@ -20,7 +31,7 @@ val tests =
 
          {actual = interp (AST_APP (AST_FUN ("x", AST_ID "x"), AST_NUM 0)),
           expected = AST_NUM 0}
-       ])
+       ])]
 
 fun main _ = (Test.runTestSuite (true, tests); OS.Process.success)
 
