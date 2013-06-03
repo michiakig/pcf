@@ -43,7 +43,7 @@ fun iszero (AST_NUM 0) = AST_BOOL true
   | iszero _           = AST_ERROR "iszero: expected numeric value"
 
 fun pred (AST_NUM 0) = AST_NUM 0
-  | pred (AST_NUM n) = AST_NUM (n + 1)
+  | pred (AST_NUM n) = AST_NUM (n - 1)
   | pred _           = AST_ERROR "pred: expected numeric value"
 
 fun succ (AST_NUM n) = AST_NUM (n + 1)
