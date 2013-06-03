@@ -1,0 +1,10 @@
+Library
+    structure Interp
+    structure InterpTests
+is
+    interp.sml
+    tests.sml
+    parser.cm
+    ../lexluthor/tests/framework.cm
+    $/basis.cm
+    $/smlnj-lib.cm

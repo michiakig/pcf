@@ -8,7 +8,10 @@
 *)
 
 (*  Increase print depth so abstract syntax trees get displayed completely.  *)
-Compiler.Control.Print.printDepth:= 100;
+(* Compiler.Control.Print.printDepth:= 100; *)
+
+structure Syntax =
+struct
 
 datatype term = AST_ID of string | AST_NUM of int | AST_BOOL of bool
   | AST_FUN of (string * term) | AST_APP of (term * term) 
@@ -21,16 +24,18 @@ datatype token = ID of string | NUM of int
   | SUCCSYM | PREDSYM | ISZEROSYM | FNSYM | RECSYM 
   | EQUAL | LPAREN | RPAREN | FNARROW | LETSYM | INSYM | ENDSYM | EOF
 
+end
 
 signature PCFLEXER =
 sig
-    val lexfile : string -> token list
-    val lexstr : string -> token list
+    val lexfile : string -> Syntax.token list
+    val lexstr : string -> Syntax.token list
 end
 
 structure PCFlexer: PCFLEXER =
 struct
   open TextIO
+  open Syntax
 
   (*  nexttoken recognizes the various reserved words of PCF, along with
       identifiers, integer literals, and the symbols =, =>, (, and ).
@@ -129,11 +134,13 @@ end
 
 signature PCFPARSER =
 sig
-  val parse : token list -> term
+  val parse : Syntax.token list -> Syntax.term
 end
 
 structure PCFparser : PCFPARSER =
 struct
+  open Syntax
+
   fun error msg = print (msg ^ "\n")
 
   (*  Exp ::= x | n | true | false | succ | pred | iszero |
@@ -260,9 +267,13 @@ struct
     end
 end
 
+structure Parser =
+struct
+
 (*  The final definitions of parsefile and parsestr put the pieces together.  *)
 
 fun parsefile file = PCFparser.parse (PCFlexer.lexfile file)
 
 fun parsestr str = PCFparser.parse (PCFlexer.lexstr str)
 
+end

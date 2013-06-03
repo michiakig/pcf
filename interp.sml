@@ -1,3 +1,22 @@
+structure Interp =
+struct
+
+open Syntax
+
+fun unparse (AST_BOOL b) = "(AST_BOOL " ^ Bool.toString b ^ ")"
+  | unparse (AST_NUM n) = "(AST_NUM " ^ Int.toString n ^ ")"
+  | unparse (AST_ERROR e) = "(AST_ERROR " ^ e ^ ")"
+  | unparse AST_ISZERO = "AST_ISZERO"
+  | unparse AST_PRED = "AST_PRED"
+  | unparse AST_SUCC = "AST_SUCC"
+  | unparse (AST_IF (e1, e2, e3)) = "(AST_IF " ^
+                                  unparse e1 ^ "," ^
+                                  unparse e2 ^ "," ^
+                                  unparse e1 ^ ")"
+  | unparse (AST_APP (e1, e2)) = "(" ^ unparse e1 ^ " " ^ unparse e2 ^ ")"
+  | unparse (AST_FUN (id, body)) = "(AST_FUN " ^ id ^ "," ^ unparse body ^ ")"
+  | unparse (AST_ID id) = "(AST_ID " ^ id ^ ")"
+  | unparse (AST_REC (id, body)) = "(AST_REC " ^ id ^ "," ^ unparse body ^ ")"
 
 fun iszero (AST_NUM 0) = AST_BOOL true
   | iszero (AST_NUM _) = AST_BOOL false
@@ -36,3 +55,5 @@ fun interp (t : term) : term =
       | AST_FUN _ => AST_ERROR "fun: not implemented"
       | AST_ID _ => AST_ERROR "id: not implemented"
       | AST_REC _ => AST_ERROR "rec: not implemented"
+
+end
