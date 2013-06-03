@@ -33,7 +33,9 @@ fun subst (t1, x, t2) =
       | AST_FUN (id, body) => if x = id
                               then t1
                               else AST_FUN (id, subst (body, x, t2))
-      | AST_REC (id, body) => AST_REC (id, subst (body, x, t2))
+      | AST_REC (id, body) => if x = id
+                              then t1
+                              else AST_REC (id, subst (body, x, t2))
       | AST_ID id => if x = id
                      then t2
                      else t1
@@ -75,6 +77,6 @@ fun interp (t : term) : term =
         end
       | AST_FUN _ => t
       | AST_ID _ => AST_ERROR "should have been replaced?"
-      | AST_REC _ => AST_ERROR "rec: not implemented"
+      | AST_REC (id, body) => interp (subst (body, id, AST_REC (id, body)))
 
 end
